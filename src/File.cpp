@@ -5,7 +5,6 @@ File::File(const std::string& path, Mode mode) {
     switch (mode) {
         case Mode::Read:      om |= std::ios::in;  break;
         case Mode::Write:     om |= std::ios::out | std::ios::trunc;  break;
-        case Mode::ReadWrite: om |= std::ios::in  | std::ios::out;    break;
     }
     stream_.open(path, om);
     if (!stream_.is_open()) {
@@ -13,11 +12,7 @@ File::File(const std::string& path, Mode mode) {
     }
 }
 
-File::File(File&& other) noexcept
-    : stream_(std::move(other.stream_))
-{
-    // other.stream_ «пустой»
-}
+File::File(File&& other) noexcept : stream_(std::move(other.stream_)) {}
 
 File& File::operator=(File&& other) noexcept {
     if (this != &other) {
@@ -39,7 +34,7 @@ std::string File::readLine() {
     std::string line;
     if (!std::getline(stream_, line)) {
         if (stream_.eof()) {
-            return "";  // или кинуть, если хотите считать это ошибкой
+            return ""; 
         }
         throw std::runtime_error("Error reading from file");
     }
@@ -51,7 +46,12 @@ void File::writeLine(const std::string& line) {
         throw std::runtime_error("File not open for writing");
     }
     stream_ << line << '\n';
+    stream_.flush();
     if (!stream_) {
         throw std::runtime_error("Error writing to file");
     }
+}
+
+bool File::eof() const {
+    return stream_.eof();
 }

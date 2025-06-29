@@ -5,27 +5,33 @@
 
 class File {
 public:
-    enum class Mode { Read, Write, ReadWrite };
+    enum class Mode { Read, Write };
 
-    // Конструктор: открывает файл
+    // Конструктор
     File(const std::string& path, Mode mode);
 
-    // Запрещаем копирование (двух объектов — одного ресурса)
+    // Конструктор копирования
     File(const File&) = delete;
+
+    // Оператор копирования присваниванием 
     File& operator=(const File&) = delete;
 
-    // Разрешаем перемещение
+    // Конструктор перемещения
     File(File&& other) noexcept;
+
+    // Оператор перемещения присваиванием
     File& operator=(File&& other) noexcept;
 
-    // Деструктор: закрывает файл
+    // Деструктор
     ~File();
 
-    // Читает одну строку (до '\n'), без символа окончания
+    // Чтение строки
     std::string readLine();
 
-    // Записывает строку с добавлением '\n'
+    // Запись строки
     void writeLine(const std::string& line);
+
+    bool eof() const;
 
 private:
     std::fstream stream_;
